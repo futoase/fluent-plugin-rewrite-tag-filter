@@ -1,4 +1,4 @@
-class Fluentd::Plugin::RewriteTagFilterOutput < Fluent::Output
+class Fluentd::Plugin::RewriteTagFilterOutput < Fluent::Filter
   Fluent::Plugin.register_output('rewrite_tag_filter', self)
 
   config_param :capitalize_regex_backreference, :bool, :default => false
