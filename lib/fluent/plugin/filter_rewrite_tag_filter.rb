@@ -1,5 +1,5 @@
 class Fluentd::Plugin::RewriteTagFilterOutput < Fluent::Filter
-  Fluent::Plugin.register_output('rewrite_tag_filter', self)
+  Fluent::Plugin.register_filter('rewrite_tag_filter', self)
 
   config_param :capitalize_regex_backreference, :bool, :default => false
   config_param :remove_tag_prefix, :string, :default => nil
@@ -41,7 +41,7 @@ class Fluentd::Plugin::RewriteTagFilterOutput < Fluent::Filter
     es.each do |time,record|
       rewrited_tag = rewrite_tag(tag, record)
       next if rewrited_tag.nil? || tag == rewrited_tag
-      Fluent::Engine.emit(rewrited_tag, time, record)
+      Fluent::collector.emit(rewrited_tag, time, record)
     end
 
     chain.next

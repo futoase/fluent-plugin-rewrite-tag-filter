@@ -56,7 +56,7 @@ It's a sample to exclude some static file log before split tag by domain.
 # At rewriterule2, redirect to tag named "clear" which unmatched for status code 200.
 # At rewriterule3, redirect to tag named "clear" which is not end with ".com"
 # At rewriterule6, "site.$2$1" to be "site.ExampleMail" by capitalize_regex_backreference option.
-<match td.apache.access>
+<filter td.apache.access>
   type rewrite_tag_filter
   capitalize_regex_backreference yes
   rewriterule1 path   \.(gif|jpe?g|png|pdf|zip)$  clear
@@ -66,9 +66,9 @@ It's a sample to exclude some static file log before split tag by domain.
   rewriterule5 domain ^news\.example\.com$        site.ExampleNews
   rewriterule6 domain ^(mail)\.(example)\.com$    site.$2$1
   rewriterule7 domain .+                          site.unmatched
-</match>
+</filter>
 
-<match site.*>
+<filter site.*>
   type mongo
   host localhost
   database apache_access
@@ -76,11 +76,11 @@ It's a sample to exclude some static file log before split tag by domain.
   tag_mapped
   capped
   capped_size 100m
-</match>
+</filter>
 
-<match clear>
+<filter clear>
   type null
-</match>
+</filter>
 ```
 
 ### Result
@@ -134,24 +134,24 @@ It's a sample to rewrite a tag with placeholder.
 
 ```
 # It will get "rewrited.access.ExampleMail"
-<match apache.access>
+<filter apache.access>
   type rewrite_tag_filter
   rewriterule1  domain  ^(mail)\.(example)\.com$  rewrited.${tag}.$2$1
   remove_tag_prefix apache
-</match>
+</filter>
 
 # It will get "rewrited.ExampleMail.app30-124.foo.com" when hostname is "app30-124.foo.com"
-<match apache.access>
+<filter apache.access>
   type rewrite_tag_filter
   rewriterule1  domain  ^(mail)\.(example)\.com$  rewrited.$2$1.${hostname}
-</match>
+</filter>
 
 # It will get "rewrited.ExampleMail.app30-124" when hostname is "app30-124.foo.com"
-<match apache.access>
+<filter apache.access>
   type rewrite_tag_filter
   rewriterule1  domain  ^(mail)\.(example)\.com$  rewrited.$2$1.${hostname}
   hostname_command hostname -s
-</match>
+</filter>
 ```
 
 ## Example
