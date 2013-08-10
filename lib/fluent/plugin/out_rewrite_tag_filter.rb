@@ -1,4 +1,4 @@
-class Fluent::RewriteTagFilterOutput < Fluent::Output
+class Fluentd::Plugin::RewriteTagFilterOutput < Fluent::Output
   Fluent::Plugin.register_output('rewrite_tag_filter', self)
 
   config_param :capitalize_regex_backreference, :bool, :default => false
@@ -21,7 +21,7 @@ class Fluent::RewriteTagFilterOutput < Fluent::Output
       end
       @rewriterules.push([rewritekey, /#{trim_regex_quote(regexp)}/, get_match_operator(regexp), rewritetag])
       rewriterule_names.push(rewritekey + regexp)
-      $log.info "adding rewrite_tag_filter rule: #{key} #{@rewriterules.last}"
+      Fluentd.log.info "adding rewrite_tag_filter rule: #{key} #{@rewriterules.last}"
     end
 
     unless @rewriterules.length > 0
@@ -75,7 +75,7 @@ class Fluent::RewriteTagFilterOutput < Fluent::Output
 
   def trim_regex_quote(regexp)
     if regexp.start_with?('"') && regexp.end_with?('"')
-      $log.info "rewrite_tag_filter: [DEPRECATED] Use ^....$ pattern for partial word match instead of double-quote-delimiter. #{regexp}"
+      Fluentd.log.info "rewrite_tag_filter: [DEPRECATED] Use ^....$ pattern for partial word match instead of double-quote-delimiter. #{regexp}"
       regexp = regexp[1..-2]
     end
     if regexp.start_with?(MATCH_OPERATOR_EXCLUDE)

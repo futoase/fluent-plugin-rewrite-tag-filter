@@ -2,7 +2,7 @@
 $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
-  s.name        = "fluent-plugin-rewrite-tag-filter"
+  s.name        = "fluentd-plugin-rewrite-tag-filter"
   s.version     = "1.3.1"
   s.license     = "Apache 2.0"
   s.authors     = ["Kentaro Yoshida"]
@@ -16,5 +16,5 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_development_dependency "rake"
-  s.add_runtime_dependency "fluentd"
+  s.add_runtime_dependency "fluentd", ['~> 0.11.0'] 
 end
