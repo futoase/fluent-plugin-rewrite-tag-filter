@@ -55,8 +55,8 @@ class RewriteTagFilterOutputTest < Test::Unit::TestCase
     rewriterule20 domain ^news\.google\.com$ site.GoogleNews
   ]
 
-  CONFIG_USE_OF_FIRST_MATCH_TAG = %[
-    use_of_first_match_tag [a-z_]+\.([a-z_]+)\.
+  CONFIG_USE_OF_FIRST_MATCH_TAG_REGEXP = %[
+    use_of_first_match_tag_regexp [a-z_]+\.([a-z_]+)\.
     rewriterule1 type ^[a-z_]+$ api.${tag}.warrior
   ]
 
@@ -194,7 +194,7 @@ class RewriteTagFilterOutputTest < Test::Unit::TestCase
   end
 
   def test_emit8_first_match_tag
-    d1 = create_driver(CONFIG_USE_OF_FIRST_MATCH_TAG, 'hoge_game.production.api')
+    d1 = create_driver(CONFIG_USE_OF_FIRST_MATCH_TAG_REGEXP, 'hoge_game.production.api')
     d1.run do
       d1.emit({'user_id' => '1000', 'type' => 'warrior', 'name' => 'Richard Costner'})
     end
