@@ -55,12 +55,9 @@ class RewriteTagFilterOutputTest < Test::Unit::TestCase
     rewriterule20 domain ^news\.google\.com$ site.GoogleNews
   ]
 
-  # split of tag
-  CONFIG_SPLIT_OF_TAG = %[
-    rewriterule1 user_name ^Lynn Minmay$ vip.${tags[1]}.remember_love
-    rewriterule2 user_name ^Harlock$ ${tags[2]}.${tags[0]}.${tags[1]}
-    rewriterule3 world ^(alice|chaos)$ application.${tags[0]}.$1_server
-    rewriterule4 world ^[a-z]+$ application.${tags[1]}.future_server
+  CONFIG_USE_OF_FIRST_MATCH_TAG_REGEXP = %[
+    use_of_first_match_tag_regexp [a-z_]+\.([a-z_]+)\.
+    rewriterule1 type ^[a-z_]+$ api.${tag}.warrior
   ]
 
   def create_driver(conf=CONFIG,tag='test')
@@ -196,30 +193,16 @@ class RewriteTagFilterOutputTest < Test::Unit::TestCase
     assert_equal 'site.GoogleNews', emits[1][0] # tag
   end
 
-  def test_emit8_split_of_tag
-    d1 = create_driver(CONFIG_SPLIT_OF_TAG, 'game.production.api')
+  def test_emit8_first_match_tag
+    d1 = create_driver(CONFIG_USE_OF_FIRST_MATCH_TAG_REGEXP, 'hoge_game.production.api')
     d1.run do
-      d1.emit({'user_id' => '10000', 'world' => 'chaos', 'user_name' => 'gamagoori'})
-      d1.emit({'user_id' => '10001', 'world' => 'chaos', 'user_name' => 'sanageyama'})
-      d1.emit({'user_id' => '10002', 'world' => 'nehan', 'user_name' => 'inumuta'})
-      d1.emit({'user_id' => '77777', 'world' => 'space', 'user_name' => 'Lynn Minmay'})
-      d1.emit({'user_id' => '99999', 'world' => 'space', 'user_name' => 'Harlock'})
+      d1.emit({'user_id' => '1000', 'type' => 'warrior', 'name' => 'Richard Costner'})
     end
     emits = d1.emits
-    p emits
-    assert_equal 5, emits.length
     p emits[0]
-    assert_equal 'application.game.chaos_server', emits[0][0]
-    p emits[1]
-    assert_equal 'application.game.chaos_server', emits[1][0]
-    p emits[2]
-    assert_equal 'application.production.future_server', emits[2][0]
-    p emits[3]
-    assert_equal 'vip.production.remember_love', emits[3][0]
-    p emits[4]
-    assert_equal 'api.game.production', emits[4][0]
+    assert_equal 1, emits.length
+    assert_equal 'api.production.warrior', emits[0][0] # tag
   end
-
 
 end
 
